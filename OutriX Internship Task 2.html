@@ -1,0 +1,145 @@
+<html>
+<head>
+  <title>To-Do List | OutriX Task</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #f0f4f8, #dbe9f4);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .todo-container {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      width: 90%;
+      max-width: 400px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #0077cc;
+      margin-bottom: 20px;
+    }
+
+    .input-wrapper {
+      display: flex;
+      gap: 10px;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 10px 14px;
+      border: none;
+      background: #0077cc;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #005fa3;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin-top: 20px;
+    }
+
+    li {
+      background: #f8f8f8;
+      padding: 10px 14px;
+      margin-bottom: 10px;
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .actions button {
+      background: #e74c3c;
+    }
+
+    .edit-btn {
+      background: #f39c12;
+    }
+  </style>
+</head>
+<body>
+  <div class="todo-container">
+    <h2>To-Do List</h2>
+    <div class="input-wrapper">
+      <input type="text" id="taskInput" placeholder="Enter a task..." />
+      <button onclick="addTask()">Add</button>
+    </div>
+    <ul id="taskList"></ul>
+  </div>
+
+  <script>
+    let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+
+    function displayTasks() {
+      const taskList = document.getElementById('taskList');
+      taskList.innerHTML = '';
+      tasks.forEach((task, index) => {
+        taskList.innerHTML += `
+          <li>
+            <span>${task}</span>
+            <div class="actions">
+              <button class="edit-btn" onclick="editTask(${index})">Edit</button>
+              <button onclick="deleteTask(${index})">Delete</button>
+            </div>
+          </li>
+        `;
+      });
+    }
+
+    function addTask() {
+      const input = document.getElementById('taskInput');
+      const task = input.value.trim();
+      if (task === '') return alert("Please enter a task.");
+      tasks.push(task);
+      localStorage.setItem('tasks', JSON.stringify(tasks));
+      input.value = '';
+      displayTasks();
+    }
+
+    function deleteTask(index) {
+      tasks.splice(index, 1);
+      localStorage.setItem('tasks', JSON.stringify(tasks));
+      displayTasks();
+    }
+
+    function editTask(index) {
+      const newTask = prompt("Edit task:", tasks[index]);
+      if (newTask !== null && newTask.trim() !== "") {
+        tasks[index] = newTask.trim();
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+        displayTasks();
+      }
+    }
+
+    // Initial render
+    displayTasks();
+  </script>
+</body>
+</html>
